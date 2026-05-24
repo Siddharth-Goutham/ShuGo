@@ -62,7 +62,7 @@ def load_user(user_id):
 class ProductInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(100), nullable=False)
-    img_url = db.Column(db.String(100), nullable=False)
+    img_url = db.Column(db.Text, nullable=False)  # Accept text configurations cleanly
     size = db.Column(db.String(5), nullable=False)
     featured = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(20), nullable=False)
@@ -190,7 +190,6 @@ def logout():
 def add_product():
     form = AddProducts()
     if form.validate_on_submit():
-        # Force a strict evaluation: if the box is ticked, it becomes True, otherwise explicitly False
         is_featured = True if form.featured.data else False        
         new_product = ProductInfo(
             product_name=form.product_name.data,
@@ -198,7 +197,7 @@ def add_product():
             size=form.size.data,
             category=form.category.data,
             price=form.price.data,
-            featured=is_featured  # 👈 Pass the sanitized boolean variable here
+            featured=is_featured
         )
         db.session.add(new_product)
         db.session.commit()
@@ -216,7 +215,12 @@ def show_category(name):
 def view_cart():
     cart_id = session.get("cart_id")
     if not cart_id:
-        return render_template("view-cart.html", items=[], total=0)
+        assigned_user = current_user.id if current_user.is_authenticated else None
+        new_cart = Cart(user_id=assigned_user)  
+        db.session.add(new_cart)
+        db.session.commit()
+        session["cart_id"] = new_cart.id
+        cart_id = new_cart.id
 
     items = CartItem.query.filter_by(cart_id=cart_id).all()
     total = sum(item.price * item.quantity for item in items)
@@ -230,7 +234,8 @@ def add_to_cart(product_id):
     cart_id = session.get("cart_id")
 
     if not cart_id:
-        new_cart = Cart()
+        assigned_user = current_user.id if current_user.is_authenticated else None
+        new_cart = Cart(user_id=assigned_user)  # Explicit status assigned safely
         db.session.add(new_cart)
         db.session.commit()
         session["cart_id"] = new_cart.id
@@ -257,105 +262,3 @@ def add_to_cart(product_id):
 def remove_item(item_id):
     item = CartItem.query.get(item_id)
     if item:
-        db.session.delete(item)
-        db.session.commit()
-    return redirect(url_for("view_cart"))
-
-
-@app.route("/update-item/<int:item_id>", methods=["POST"])
-def update_item(item_id):
-    quantity = int(request.form.get("quantity", 0))
-    item = CartItem.query.get(item_id)
-
-    if item:
-        if quantity <= 0:
-            db.session.delete(item)
-        else:
-            item.quantity = quantity
-        db.session.commit()
-
-    return redirect(url_for("view_cart"))
-
-
-@app.route('/create-payment', methods=['POST'])
-@login_required
-def create_payment():
-    try:
-        cart_total = session.get('total', 0)
-        if cart_total <= 0:
-            flash("Your cart is empty!", "danger")
-            return redirect(url_for('view_cart'))
-
-        options = {
-            "amount": int(float(cart_total) * 100),
-            "currency": "INR",
-            "accept_partial": False,
-            "description": "Creator's Collective Purchase Transaction",
-            "customer": {
-                "name": f"{current_user.first_name} {current_user.last_name}",
-                "email": current_user.email,
-                "contact": "+919876543210"
-            },
-            "notify": {"sms": False, "email": True},
-            "reminder_enable": False,
-            "callback_url": url_for('payment_callback', _external=True),
-            "callback_method": "get"
-        }
-
-        payment_link = razorpay_client.payment_link.create(data=options)
-        return redirect(payment_link.get('short_url'))
-    except Exception as e:
-        flash(f"An error occurred while initializing checkout: {str(e)}", "danger")
-        return redirect(url_for('view_cart'))
-
-
-@app.route('/payment-callback', methods=['GET'])
-def payment_callback():
-    payment_id = request.args.get('razorpay_payment_id')
-    payment_link_id = request.args.get('razorpay_payment_link_id')
-    payment_status = request.args.get('razorpay_payment_link_status')
-    signature = request.args.get('razorpay_signature')
-
-    try:
-        razorpay_client.utility.verify_payment_signature({
-            'razorpay_payment_link_id': payment_link_id,
-            'razorpay_payment_id': payment_id,
-            'razorpay_payment_link_status': payment_status,
-            'razorpay_signature': signature
-        })
-
-        if payment_status == "paid":
-            cart_id = session.get("cart_id")
-            if cart_id:
-                CartItem.query.filter_by(cart_id=cart_id).delete()
-                db.session.commit()
-
-            session.pop('total', None)
-            session.pop('cart_id', None)
-            flash("Payment Successful! Your order has been placed and your cart is cleared.", "success")
-            return redirect(url_for('home'))
-
-        elif payment_status == "cancelled":
-            flash("Payment was cancelled.", "danger")
-        else:
-            flash(f"Transaction incomplete. Status: {payment_status}", "warning")
-
-    except razorpay.errors.SignatureVerificationError:
-        flash("Security verification failed. Connection rejected.", "danger")
-    except Exception as e:
-        flash(f"A server processing error occurred: {str(e)}", "danger")
-
-    return redirect(url_for('view_cart'))
-
-
-# ==========================================
-# PRODUCTION DATABASE INITIALIZATION
-# ==========================================
-# Runs context generation at launch so Gunicorn safely maps schemas upon import on Render
-with app.app_context():
-    db.create_all()
-
-if __name__ == "__main__":
-    # Dynamically bind to Render's container port, falling back to 5000 locally
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
