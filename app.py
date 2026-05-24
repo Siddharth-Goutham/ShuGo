@@ -13,7 +13,8 @@ from wtforms.validators import DataRequired, URL, Email, Length, ValidationError
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "secret"
+# Securely fallback locally, but reads from Render Environment panel in production
+app.secret_key = os.getenv("SECRET_KEY", "dev_fallback_string_key_12345")
 bootstrap = Bootstrap5(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
@@ -325,7 +326,14 @@ def payment_callback():
     return redirect(url_for('view_cart'))
 
 
+# ==========================================
+# PRODUCTION DATABASE INITIALIZATION
+# ==========================================
+# Runs context generation at launch so Gunicorn safely maps schemas upon import on Render
+with app.app_context():
+    db.create_all()
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    # Dynamically bind to Render's container port, falling back to 5000 locally
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
