@@ -12,7 +12,7 @@ SQLAlchemy==2.0.27
 Flask-WTF==1.2.1
 WTForms==3.1.2
 email-validator==2.1.1
-bootstrap5==0.2.6
+Bootstrap-Flask==2.2.0
 
 # Authentication & Security
 Flask-Login==0.6.3
