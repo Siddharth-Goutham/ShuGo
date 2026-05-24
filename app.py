@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_fallback_string_key_12345")
 bootstrap = Bootstrap5(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
+db_url = os.environ.get("DB_URI", "sqlite:///.db")
 db = SQLAlchemy()
 db.init_app(app)
 bcrypt = Bcrypt(app)
