@@ -191,12 +191,15 @@ def logout():
 def add_product():
     form = AddProducts()
     if form.validate_on_submit():
+        # Force a strict evaluation: if the box is ticked, it becomes True, otherwise explicitly False
+        is_featured = True if form.featured.data else False        
         new_product = ProductInfo(
             product_name=form.product_name.data,
             img_url=form.img_url.data,
             size=form.size.data,
             category=form.category.data,
-            price=form.price.data
+            price=form.price.data,
+            featured=is_featured  # 👈 Pass the sanitized boolean variable here
         )
         db.session.add(new_product)
         db.session.commit()
