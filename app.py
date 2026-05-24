@@ -10,15 +10,19 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, SelectField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, URL, Email, Length, ValidationError
 
+# Load local environment variables if testing locally
 load_dotenv()
 
 app = Flask(__name__)
+
 # Securely fallback locally, but reads from Render Environment panel in production
 app.secret_key = os.getenv("SECRET_KEY", "dev_fallback_string_key_12345")
 bootstrap = Bootstrap5(app)
 
-# --- DYNAMIC DATABASE ROUTING (FIXED FOR RENDER & SQLALCHEMY 2.x) ---
-# Check for DATABASE_URL to match your Render Environment dashboard key precisely
+# ====================================================================
+# DYNAMIC DATABASE ROUTING (FIXED FOR RENDER & SQLALCHEMY 2.x)
+# ====================================================================
+# Checks for DATABASE_URL to match your Render Environment dashboard key precisely
 db_url = os.environ.get("DATABASE_URL")
 
 if db_url:
@@ -30,7 +34,8 @@ else:
     db_url = "sqlite:///products.db"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-# --------------------------------------------------------------------
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# ====================================================================
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -40,6 +45,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+# Initialize Razorpay Client securely
 razorpay_client = razorpay.Client(
     auth=(os.getenv("RAZORPAY_KEY_ID"), os.getenv("RAZORPAY_KEY_SECRET"))
 )
