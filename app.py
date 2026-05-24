@@ -195,8 +195,7 @@ def add_product():
             img_url=form.img_url.data,
             size=form.size.data,
             category=form.category.data,
-            price=form.price.data,
-            featured=form.featured.data
+            price=form.price.data
         )
         db.session.add(new_product)
         db.session.commit()
