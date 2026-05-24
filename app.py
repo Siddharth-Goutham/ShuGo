@@ -190,16 +190,26 @@ def logout():
 def add_product():
     form = AddProducts()
     if form.validate_on_submit():
-        new_product = ProductInfo(
-            product_name=form.product_name.data,
-            img_url=form.img_url.data,
-            size=form.size.data,
-            category=form.category.data,
-            price=form.price.data
-        )
-        db.session.add(new_product)
-        db.session.commit()
-        return redirect(url_for("home"))
+        try:
+            # Force the boolean to a literal 1 (True) or 0 (False)
+            db_featured_value = 1 if form.featured.data else 0
+
+            new_product = ProductInfo(
+                product_name=form.product_name.data,
+                img_url=form.img_url.data,
+                size=form.size.data,
+                category=form.category.data,
+                price=float(form.price.data),
+                featured=db_featured_value
+            )
+            db.session.add(new_product)
+            db.session.commit()
+            return redirect(url_for("home"))
+        except Exception as e:
+            db.session.rollback()
+            print(f"Database Error: {e}")
+            return f"Database Error: {str(e)}", 500
+            
     return render_template("add_products.html", form=form)
 
 
