@@ -27,3 +27,4 @@ razorpay==1.4.1
 gunicorn==21.2.0
 
 setuptools
+psycopg2-binary==2.9.9
