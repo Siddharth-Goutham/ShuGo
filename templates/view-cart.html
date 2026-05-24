@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | ShuGo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #222;
+        }
+        .logo {
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: -webkit-linear-gradient(left, #ff4000, #008cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="pt-28">
+
+    <nav>
+        <div class="logo text-2xl md:text-3xl">ShuGo</div>
+        <div class="flex gap-8 list-none">
+            <a href="{{ url_for('home') }}" class="text-white font-semibold text-sm hover:text-[#ff4000] transition-colors">Home</a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 my-10">
+        <h2 class="text-3xl font-bold mb-6">Your Cart</h2>
+
+        {% if items %}
+        <div class="overflow-hidden bg-[#111] rounded-xl border border-zinc-900">
+            <table class="w-full border-collapse text-center">
+                <thead>
+                    <tr class="bg-zinc-900 border-b border-zinc-800">
+                        <th class="py-4 px-3 text-xs uppercase tracking-wider font-semibold text-zinc-400">Product</th>
+                        <th class="py-4 px-3 text-xs uppercase tracking-wider font-semibold text-zinc-400">Price</th>
+                        <th class="py-4 px-3 text-xs uppercase tracking-wider font-semibold text-zinc-400">Qty</th>
+                        <th class="py-4 px-3 text-xs uppercase tracking-wider font-semibold text-zinc-400">Total</th>
+                        <th class="py-4 px-3 text-xs uppercase tracking-wider font-semibold text-zinc-400">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-zinc-900">
+                    {% for item in items %}
+                    <tr class="hover:bg-zinc-900/50 transition-colors">
+                        <td class="py-4 px-3 font-medium text-left md:text-center">{{ item.product_name }}</td>
+                        <td class="py-4 px-3 text-zinc-300">₹{{ item.price }}</td>
+
+                        <td class="py-4 px-3">
+                            <form action="{{ url_for('update_item', item_id=item.id) }}" method="POST" class="flex items-center justify-center gap-2">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 p-1.5 bg-black border border-zinc-800 text-white rounded text-center focus:outline-none focus:border-[#ff4000]">
+                                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs px-2.5 py-1.5 rounded transition-colors">Update</button>
+                            </form>
+                        </td>
+
+                        <td class="py-4 px-3 font-medium text-[#008cff]">₹{{ item.price * item.quantity }}</td>
+
+                        <td class="py-4 px-3">
+                            <a href="{{ url_for('remove_item', item_id=item.id) }}" class="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-3 py-1.5 rounded transition-colors">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex flex-col items-end mt-6 gap-4">
+            <h3 class="text-xl font-bold">Total: <span class="text-white">₹{{ total }}</span></h3>
+
+            <form action="{{ url_for('create_payment') }}" method="POST">
+                <input type="hidden" name="checkout_total" value="{{ total }}">
+                <button type="submit" class="bg-gradient-to-r from-[#ff4000] to-[#008cff] text-white px-8 py-3.5 rounded-full font-bold text-sm tracking-wide shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-150">
+                    Proceed to Checkout
+                </button>
+            </form>
+        </div>
+
+        {% else %}
+        <div class="bg-[#111] border border-zinc-900 rounded-xl p-12 text-center text-zinc-500">
+            <p class="text-base mb-4">Your cart is empty!</p>
+            <a href="{{ url_for('home') }}" class="text-[#ff4000] font-semibold text-sm hover:underline">
+                Go Back Shopping →
+            </a>
+        </div>
+        {% endif %}
+    </main>
+
+</body>
+</html>

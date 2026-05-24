@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShuGo | Join the Movement</title>
+
+    <!-- Fonts & Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL & THEME SETUP --- */
+        :root {
+            --bg-color: #0d1117;
+            --form-bg: #161b22;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+
+            --accent-orange: #ff4000;
+            --accent-blue: #008cff;
+            --form-focus-blue: #58a6ff;
+            --error-color: #f85149;
+
+            --font-main: 'Inter', sans-serif;
+            --font-logo: 'Poppins', sans-serif;
+            --transition-speed: 0.2s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #000000;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* --- THE REGISTER CONTAINER --- */
+        .register-container {
+            background-color: var(--form-bg);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(139, 148, 158, 0.1);
+        }
+
+        /* --- THE LOGO AREA --- */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-logo {
+            font-family: var(--font-logo);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- FORM GRID --- */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Target fields generated dynamically by WTForms */
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--bg-color);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: var(--form-focus-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        /* --- ERROR WRAPPER --- */
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* --- CHECKBOX STYLING --- */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--form-focus-blue);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* --- SUBMIT BUTTON --- */
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-register:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* --- FOOTER --- */
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .logo-link {
+            color: var(--form-focus-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .logo-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="logo-wrapper">
+            <div class="main-logo">ShuGo</div>
+        </div>
+
+        <h2>CREATE YOUR ACCOUNT</h2>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.fname.label }}
+                    {{ form.fname() }}
+                    {% for error in form.fname.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.lname.label }}
+                    {{ form.lname() }}
+                    {% for error in form.lname.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email() }}
+                {% for error in form.email.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password() }}
+                {% for error in form.password.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-group">
+                    {{ form.terms() }}
+                    <span class="checkbox-label">
+                        I agree to the <a href="#" class="logo-link">Terms of Service</a> and <a href="#" class="logo-link">Privacy Policy</a>.
+                    </span>
+                </label>
+                {% for error in form.terms.errors %}
+                    <div class="error-message" style="margin-top: -15px; margin-bottom: 15px;">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            {{ form.submit(class="btn-register") }}
+        </form>
+
+        <div class="form-footer">
+            Already a member? <a href="{{ url_for('login') }}" class="logo-link">Sign In</a>
+        </div>
+    </div>
+
+</body>
+</html>

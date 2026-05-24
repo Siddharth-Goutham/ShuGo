@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% from 'bootstrap5/form.html' import render_form %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Drop | Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    {{ bootstrap.load_css() }}
+    <style>
+        body {
+            background: black;
+        }
+        .logo {
+            color: white;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #71717a;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+        .back-link {
+            color: #71717a;
+            text-decoration: none;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .back-link:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="{{ url_for('home') }}" class="back-link">← Back to Store</a>
+
+        <h1 class="logo">Add New Drop</h1>
+        <p class="text-zinc-500 text-sm mb-10" style="color: #71717a;">Enter product details to update the database.</p>
+
+        {{ render_form(form) }}
+    </div>
+
+</body>
+</html>

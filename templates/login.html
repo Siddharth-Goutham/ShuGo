@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShuGo | Sign In</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL & THEME SETUP --- */
+        :root {
+            --bg-color: #0d1117;
+            --form-bg: #161b22;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+
+            --accent-orange: #ff4000;
+            --accent-blue: #008cff;
+            --form-focus-blue: #58a6ff;
+            --error-color: #f85149;
+
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-logo: 'Poppins', sans-serif;
+            --transition-speed: 0.2s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #000000;
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* --- THE LOGIN CONTAINER --- */
+        .login-container {
+            background-color: var(--form-bg);
+            padding: 50px 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 148, 158, 0.1);
+        }
+
+        /* --- THE LOGO AREA --- */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .main-logo {
+            font-family: var(--font-logo);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .login-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-form label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .login-form .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--bg-color);
+            border: 1px solid rgba(139, 148, 158, 0.3);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .login-form .form-control:focus {
+            outline: none;
+            border-color: var(--form-focus-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            display: block;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* --- SUBMIT BUTTON --- */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            transition: transform 0.1s ease, opacity var(--transition-speed) ease;
+            margin-top: 10px;
+            font-family: var(--font-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* --- LINKS --- */
+        .logo-link {
+            color: var(--form-focus-blue);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color var(--transition-speed);
+        }
+
+        .logo-link:hover {
+            color: #79b8ff;
+            text-decoration: underline;
+        }
+
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .u-flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo-wrapper">
+            <h1 class="main-logo">ShuGo</h1>
+        </div>
+
+        <form class="login-form" method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <div class="u-flex-between">
+                    {{ form.password.label }}
+                    <a href="#" class="logo-link">Forgot password?</a>
+                </div>
+                {{ form.password(class="form-control") }}
+
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {{ form.submit(class="btn-submit") }}
+        </form>
+
+        <div class="form-footer">
+            Don't have an account? <a href="{{ url_for('register') }}" class="logo-link">Sign Up</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShuGo | Define Your Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Siddharth-Goutham/Drop./main/favicon.png">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #222;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 2.5vw;
+            letter-spacing: -0.05em;
+            background: -webkit-linear-gradient(left, #ff4000, #008cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+        .nav-links a:hover {
+            color: #ff4000;
+        }
+        .hero-image {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            margin-top: 7vw;
+        }
+        #style {
+            background: -webkit-linear-gradient(#ff4000, #008cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .featured-drop {
+            font-size: 3.5vw;
+            font-weight: 800;
+            color: white;
+        }
+        #footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5vw;
+            font-weight: 800;
+            background: -webkit-linear-gradient(#ff4000, #008cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ShuGo</div>
+        <div class="nav-links">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}" class="nav-item">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="nav-item">Profile</a>
+            {% endif %}
+            <a href="{{ url_for('view_cart') }}" class="nav-item">Cart</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-8 py-12 items-center">
+        <div class="space-y-8">
+            <h2 class="text-7xl md:text-8xl font-black leading-none tracking-tighter">
+                DEFINE <br> YOUR <br><div id="style">STYLE.</div>
+            </h2>
+            <p class="text-zinc-400 text-lg max-w-md">
+                Curated streetwear, accessories, and digital exclusives. Bold pieces for those who refuse to blend in.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="#product-section" class="bg-gradient-to-r from-[#ff4000] to-[#008cff] px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-200 text-white shadow-lg">
+                    Shop Now
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14m-7-7 7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="hero-image h-[600px] rounded-3xl"></div>
+    </main>
+
+    <div class="border-y border-zinc-800 py-6 my-12 overflow-hidden whitespace-nowrap">
+        <div class="flex justify-around text-zinc-500 font-medium uppercase tracking-widest text-xs">
+            <span>⚡ Instant Digital Delivery</span>
+            <span>📦 Free Shipping Over $100</span>
+            <span>🛡️ Secure Payments</span>
+        </div>
+    </div>
+
+    <section class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <span class="text-rose-500 font-bold text-xs uppercase tracking-widest">Trending Now</span>
+                <h3 class="featured-drop" id="product-section">Featured Drops</h3>
+            </div>
+        </div>
+
+        <!-- CLOTHING SECTION -->
+        <section class="mb-20">
+            <div class="flex justify-between items-center">
+                <div class="inline-block bg-black border border-[#FF8C00] text-[#FF8C00] rounded-full px-5 py-1 text-[11px] font-medium tracking-widest mb-8">
+                    Clothing
+                </div>
+                <a href="{{ url_for('show_category', name='Clothing') }}" class="text-[#ff4000] text-sm font-semibold flex items-center gap-1 hover:opacity-80 transition-opacity">
+                    View All
+                    <span class="text-[10px]"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {% for product in products %}
+                    {% if product.category == "Clothing" and product.featured %}
+                        <div class="group">
+                            <div class="relative aspect-[3/4] mb-3 overflow-hidden rounded-xl bg-zinc-900">
+                                <img src="{{product.img_url}}" alt="{{product.product_name}}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <h3 class="text-white text-sm font-medium">{{product.product_name}}<br>({{product.size}})</h3>
+                            <p class="text-zinc-400 text-xs font-medium">₹{{product.price}}</p>
+                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="block w-full mt-3 py-2 border border-zinc-800 text-zinc-400 text-[10px] font-bold uppercase tracking-widest text-center hover:bg-[#ff4000] hover:border-[#ff4000] hover:text-white transition-all rounded-md">
+                                Quick Add +
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- FOOTWEAR SECTION -->
+        <section class="mb-20">
+            <div class="flex justify-between items-center">
+                <div class="inline-block bg-black border border-[#FF8C00] text-[#FF8C00] rounded-full px-5 py-1 text-[11px] font-medium tracking-widest mb-8">
+                    Footwear
+                </div>
+                <a href="{{ url_for('show_category', name='Footwear') }}" class="text-[#ff4000] text-sm font-semibold flex items-center gap-1 hover:opacity-80 transition-opacity">
+                    View All
+                    <span class="text-[10px]"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {% for product in products %}
+                    {% if product.category == "Footwear" %}
+                        <div class="group cursor-pointer">
+                            <div class="relative aspect-[4/3] mb-4 overflow-hidden rounded-xl bg-zinc-900">
+                                <img src="{{product.img_url}}" alt="{{product.product_name}}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <h3 class="text-sm font-semibold truncate">{{product.product_name}}<br>({{product.size}})</h3>
+                            <div class="flex items-center gap-2">
+                                <p class="text-zinc-400 text-xs font-medium">₹{{product.price}}</p>
+                            </div>
+                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="block w-full mt-3 py-2 border border-zinc-800 text-zinc-400 text-[10px] font-bold uppercase tracking-widest text-center hover:bg-[#ff4000] hover:border-[#ff4000] hover:text-white transition-all rounded-md">
+                                Quick Add +
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    </section>
+
+    <footer class="bg-[#0a0a0a] border-t border-zinc-900 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+                <div class="md:col-span-6 space-y-6">
+                    <h2 class="logo" id="footer-logo">ShuGo</h2>
+                    <p class="text-zinc-500 text-base max-w-xs leading-relaxed">
+                        Bold fashion for those who refuse to blend in. Physical and digital drops.
+                    </p>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h3 class="font-bold mb-6 text-sm text-white">Shop</h3>
+                    <ul class="space-y-4 text-zinc-500 text-sm">
+                        <li><a href="{{ url_for('show_category', name='Clothing') }}" class="hover:text-white transition">Clothing</a></li>
+                        <li><a href="{{ url_for('show_category', name='Footwear') }}" class="hover:text-white transition">Footwear</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h3 class="font-bold mb-6 text-sm text-white">Account</h3>
+                    <ul class="space-y-4 text-zinc-500 text-sm">
+                        <li><a href="{{ url_for('login') }}" class="hover:text-white transition">Sign In</a></li>
+                        <li><a href="{{ url_for('register') }}" class="hover:text-white transition">Create Account</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-zinc-900 pt-8">
+                <p class="text-center text-zinc-600 text-xs tracking-wide">
+                    © 2026 ShuGo All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

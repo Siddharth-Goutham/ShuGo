@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE {{ category.capitalize() }} COLLECTION | ShuGo</title>
+
+    <!-- Fonts & Tailwind -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* --- GLOBAL ROOT VARIABES --- */
+        :root {
+            --bg-black: #000000;
+            --accent-orange: #ff4000;
+            --accent-blue: #008cff;
+            --text-white: #ffffff;
+            --text-grey: #888888;
+            --border-color: #222222;
+            --transition-speed: 0.3s;
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #111;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 2.5vw;
+            letter-spacing: -0.05em;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-orange);
+        }
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            margin: 140px auto 60px;
+            max-width: 1400px;
+            padding: 0 5%;
+            text-align: left;
+        }
+
+        .page-header h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            line-height: 0.9;
+        }
+
+        #heading-category {
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: var(--text-grey);
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        /* --- PRODUCT GRID --- */
+        .product-grid {
+            max-width: 1400px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        /* --- PRODUCT CARD --- */
+        .product-tile {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            transition: transform var(--transition-speed);
+        }
+
+        .product-tile:hover {
+            transform: translateY(-8px);
+        }
+
+        .image-box {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            background: #111;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid #111;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-tile:hover .image-box img {
+            transform: scale(1.05);
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            padding-left: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 14px;
+            color: var(--text-grey);
+            margin-bottom: 15px;
+            padding-left: 0.5rem;
+        }
+
+        /* --- FOOTER LOGO --- */
+        #footer-drip {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5vw;
+            font-weight: 800;
+            background: -webkit-linear-gradient(left, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- RESPONSIVE BREAKPOINTS --- */
+        @media (max-width: 1100px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .logo, #footer-drip { font-size: 4vw; }
+        }
+
+        @media (max-width: 700px) {
+            .page-header h1 { font-size: 3.5rem; letter-spacing: -0.04em; }
+            .product-grid { grid-template-columns: 1fr; }
+            .logo, #footer-drip { font-size: 6vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">ShuGo</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('view_cart') }}">Cart</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-header">
+        <h1>THE <span id="heading-category">{{ category.capitalize() }}</span> COLLECTION</h1>
+        <p>Bold pieces for those who refuse to blend in.</p>
+    </header>
+
+    <!-- Main Grid Content -->
+    <main class="product-grid">
+        {% for product in products %}
+            {% if product.category == category %}
+                <div class="product-tile">
+                    <div class="image-box">
+                        <img src="{{ product.img_url }}" alt="{{ product.product_name }}">
+                    </div>
+                    <h3 class="product-name">{{ product.product_name }}<br>({{ product.size }})</h3>
+                    <p class="product-price">₹{{ product.price }}</p>
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}"
+                       class="block w-full mt-3 py-2 border border-zinc-800 text-zinc-400 text-[10px] font-bold uppercase tracking-widest text-center hover:bg-[#ff4000] hover:border-[#ff4000] hover:text-white transition-all rounded-md">
+                        Quick Add +
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-[#0a0a0a] border-t border-zinc-900 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+
+                <div class="md:col-span-6 space-y-6">
+                    <h2 id="footer-drip">ShuGo</h2>
+                    <p class="text-zinc-500 text-base max-w-xs leading-relaxed">
+                        Bold fashion for those who refuse to blend in. Physical and digital drops.
+                    </p>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h3 class="font-bold mb-6 text-sm text-white">Shop</h3>
+                    <ul class="space-y-4 text-zinc-500 text-sm">
+                        <li><span class="cursor-pointer hover:text-white transition"><a href="{{ url_for('show_category', name='Clothing') }}">Clothing</a></span></li>
+                        <li><span class="cursor-pointer hover:text-white transition"><a href="{{ url_for('show_category', name='Footwear') }}">Footwear</a></span></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h3 class="font-bold mb-6 text-sm text-white">Account</h3>
+                    <ul class="space-y-4 text-zinc-500 text-sm">
+                        <li><span class="cursor-pointer hover:text-white transition"><a href="{{ url_for('login') }}">Sign In</a></span></li>
+                        <li><span class="cursor-pointer hover:text-white transition"><a href="{{ url_for('register') }}">Create Account</a></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-zinc-900 pt-8">
+                <p class="text-center text-zinc-600 text-xs tracking-wide">
+                    &copy; 2026 ShuGo All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
