@@ -3,7 +3,7 @@ import razorpay
 from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, session, request, flash
 from flask_bcrypt import Bcrypt
-from bootstrap_flask import Bootstrap5
+from flask_bootstrap import Bootstrap5
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
