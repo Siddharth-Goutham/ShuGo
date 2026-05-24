@@ -190,14 +190,13 @@ def logout():
 def add_product():
     form = AddProducts()
     if form.validate_on_submit():
-        is_featured = True if form.featured.data else False        
         new_product = ProductInfo(
             product_name=form.product_name.data,
             img_url=form.img_url.data,
             size=form.size.data,
             category=form.category.data,
             price=form.price.data,
-            featured=is_featured
+            featured=form.featured.data
         )
         db.session.add(new_product)
         db.session.commit()
