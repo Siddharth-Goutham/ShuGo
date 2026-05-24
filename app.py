@@ -63,7 +63,7 @@ class ProductInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(100), nullable=False)
     img_url = db.Column(db.Text, nullable=False)  # Accept text configurations cleanly
-    size = db.Column(db.String(5), nullable=False)
+    size = db.Column(db.String(10), nullable=False)
     featured = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(20), nullable=False)
     price = db.Column(db.Float, nullable=False)
