@@ -262,3 +262,103 @@ def add_to_cart(product_id):
 def remove_item(item_id):
     item = CartItem.query.get(item_id)
     if item:
+        db.session.delete(item)
+        db.session.commit()
+    return redirect(url_for("view_cart"))
+
+
+@app.route("/update-item/<int:item_id>", methods=["POST"])
+def update_item(item_id):
+    quantity = int(request.form.get("quantity", 0))
+    item = CartItem.query.get(item_id)
+
+    if item:
+        if quantity <= 0:
+            db.session.delete(item)
+        else:
+            item.quantity = quantity
+        db.session.commit()
+
+    return redirect(url_for("view_cart"))
+
+
+@app.route('/create-payment', methods=['POST'])
+@login_required
+def create_payment():
+    try:
+        cart_total = session.get('total', 0)
+        if cart_total <= 0:
+            flash("Your cart is empty!", "danger")
+            return redirect(url_for('view_cart'))
+
+        options = {
+            "amount": int(float(cart_total) * 100),
+            "currency": "INR",
+            "accept_partial": False,
+            "description": "Creator's Collective Purchase Transaction",
+            "customer": {
+                "name": f"{current_user.first_name} {current_user.last_name}",
+                "email": current_user.email,
+                "contact": "+919876543210"
+            },
+            "notify": {"sms": False, "email": True},
+            "reminder_enable": False,
+            "callback_url": url_for('payment_callback', _external=True),
+            "callback_method": "get"
+        }
+
+        payment_link = razorpay_client.payment_link.create(data=options)
+        return redirect(payment_link.get('short_url'))
+    except Exception as e:
+        flash(f"An error occurred while initializing checkout: {str(e)}", "danger")
+        return redirect(url_for('view_cart'))
+
+
+@app.route('/payment-callback', methods=['GET'])
+def payment_callback():
+    payment_id = request.args.get('razorpay_payment_id')
+    payment_link_id = request.args.get('razorpay_payment_link_id')
+    payment_status = request.args.get('razorpay_payment_link_status')
+    signature = request.args.get('razorpay_signature')
+
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            'razorpay_payment_link_id': payment_link_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_payment_link_status': payment_status,
+            'razorpay_signature': signature
+        })
+
+        if payment_status == "paid":
+            cart_id = session.get("cart_id")
+            if cart_id:
+                CartItem.query.filter_by(cart_id=cart_id).delete()
+                db.session.commit()
+
+            session.pop('total', None)
+            session.pop('cart_id', None)
+            flash("Payment Successful! Your order has been placed and your cart is cleared.", "success")
+            return redirect(url_for('home'))
+
+        elif payment_status == "cancelled":
+            flash("Payment was cancelled.", "danger")
+        else:
+            flash(f"Transaction incomplete. Status: {payment_status}", "warning")
+
+    except razorpay.errors.SignatureVerificationError:
+        flash("Security verification failed. Connection rejected.", "danger")
+    except Exception as e:
+        flash(f"A server processing error occurred: {str(e)}", "danger")
+
+    return redirect(url_for('view_cart'))
+
+
+# ==========================================
+# PRODUCTION DATABASE INITIALIZATION
+# ==========================================
+with app.app_context():
+    db.create_all()
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
