@@ -11,7 +11,6 @@ from wtforms import StringField, SubmitField, FloatField, SelectField, BooleanFi
 from wtforms.validators import DataRequired, URL, Email, Length, ValidationError
 
 # Load local environment variables if testing locally
-load_dotenv()
 
 app = Flask(__name__)
 
